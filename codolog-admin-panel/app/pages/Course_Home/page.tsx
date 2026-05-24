@@ -89,96 +89,7 @@ const timeOptions = [
 
 // ─── MODULE DATA ───────────────────────────────────────────────────────
 
-const modulesData: Module[] = [
-  {
-    id: 1,
-    title: "Introduction to React Native",
-
-    topics: [
-      {
-        id: 1,
-
-        title: "Intro JavaScript",
-
-        date: "2026-05-20",
-
-        day: "Sunday",
-
-        time: "7:00 PM",
-
-        tutorId: 1,
-
-        tutorName: "Shivam Dubey",
-
-        liveLink: "https://meet.google.com/abc-123",
-      },
-
-      {
-        id: 2,
-
-        title: "Intro HTML",
-
-        date: "2026-05-21",
-
-        day: "Monday",
-
-        time: "8:00 PM",
-
-        tutorId: 2,
-
-        tutorName: "Rahul Sharma",
-
-        liveLink: "https://zoom.us/react-html",
-      },
-    ],
-  },
-
-  {
-    id: 2,
-
-    title: "Introduction to CSS",
-
-    topics: [
-      {
-        id: 3,
-
-        title: "Intro CSS",
-
-        date: "2026-05-22",
-
-        day: "Tuesday",
-
-        time: "6:00 PM",
-
-        tutorId: 3,
-
-        tutorName: "Priya Singh",
-
-        liveLink: "https://meet.google.com/css-class",
-      },
-
-      {
-        id: 4,
-
-        title: "Intro Tailwind",
-
-        date: "2026-05-23",
-
-        day: "Wednesday",
-
-        time: "9:00 PM",
-
-        tutorId: 4,
-
-        tutorName: "Aman Verma",
-
-        liveLink: "https://zoom.us/tailwind",
-      },
-    ],
-  },
-];
-
-// ─── ICONS ─────────────────────────────────────────────────────────────
+//  ─── ICONS ─────────────────────────────────────────────────────────────
 
 const EditIcon = () => (
   <svg
@@ -289,22 +200,35 @@ function CoursesTable({ courses }: { courses: Course[] }) {
 
               <td className="px-4 py-3 border-b">
                 <div className="flex gap-2">
-                  <button
-                    onClick={() =>
-                      router.push(
-                        `/pages/Course_Home/edit/${course.id}`
-                      )
-                    }
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-md border"
-                  >
-                    <EditIcon />
-                    Edit
-                  </button>
-
-                  <button className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-black text-white">
-                    <ViewIcon />
-                    View
-                  </button>
+                <button
+  onClick={() =>
+    router.push(
+      `/pages/Course_Home/edit/${course.id}`
+    )
+  }
+  className="
+    flex
+    items-center
+    gap-2
+    px-4
+    py-2
+    rounded-xl
+    bg-gradient-to-r
+    from-blue-600
+    to-indigo-700
+    hover:from-blue-700
+    hover:to-indigo-800
+    text-white
+    font-bold
+    shadow-lg
+    hover:scale-105
+    transition-all
+    duration-300
+  "
+>
+  <ViewIcon />
+  Open Course
+</button>
                 </div>
               </td>
             </tr>
@@ -316,41 +240,44 @@ function CoursesTable({ courses }: { courses: Course[] }) {
 }
 
 // ─── SCHEDULE MODULES ──────────────────────────────────────────────────
-
 function ScheduleModules() {
+
   const courseId = 101;
-  const [modules, setModules] = useState<Module[]>(modulesData);
+
+  const API_URL = `https://your-api-link.com/api/course/${courseId}`;
+
+  const [modules, setModules] = useState<Module[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTopicId, setEditingTopicId] = useState<number | null>(null);
 
-useEffect(() => {
-  if (typeof window !== "undefined") {
-  
-    localStorage.setItem(
-      `schedule-course-${courseId}`,
-      JSON.stringify(modules)
-    );
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        console.log("API DATA:", data);
+        setModules(data.modules);
+      } catch (error) {
+        console.log("API ERROR:", error);
+      }
+    };
 
-    console.log("Saved:", modules);
+    fetchCourseData();
+  }, []);
 
-  }
-  
-}, [modules]);
+  const getDayFromDate = (dateString: string) => {
+    const days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
 
-const getDayFromDate = (dateString: string) => {
-
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-
-  return days[new Date(dateString).getDay()];
-};
+    return days[new Date(dateString).getDay()];
+  };
 
   const updateTopic = (
     moduleId: number,
@@ -389,9 +316,112 @@ const getDayFromDate = (dateString: string) => {
           <div className="bg-[#d9d9d9] rounded-[24px] px-7 py-6 shadow-sm">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-lg font-bold text-gray-500 mb-2">
-                  Course ID: #{courseId}
-                </p>
+                <div className="flex items-center justify-between mb-4">
+
+  {/* LEFT */}
+  <div>
+
+    <div className="flex items-center gap-3 mb-3">
+
+      <div
+        className="
+          bg-black
+          text-white
+          px-4
+          py-2
+          rounded-2xl
+          text-sm
+          font-black
+          shadow-lg
+        "
+      >
+        COURSE #{courseId}
+      </div>
+
+      <div
+        className="
+          bg-green-100
+          text-green-700
+          px-3
+          py-1
+          rounded-full
+          text-xs
+          font-bold
+        "
+      >
+        ACTIVE
+      </div>
+
+    </div>
+
+    <p className="text-[24px] font-black text-black leading-tight">
+      Module {moduleIndex + 1}
+    </p>
+
+    <h2 className="text-[34px] font-black text-black leading-tight mt-1">
+      {module.title}
+    </h2>
+
+    <p className="text-[18px] font-semibold mt-4 text-gray-700">
+      {module.topics.length} Scheduled Topics
+    </p>
+
+  </div>
+
+  {/* RIGHT */}
+  <div className="flex flex-col gap-3">
+
+    <button
+      onClick={() =>
+        window.location.href = `/pages/Course_Home/edit/${courseId}`
+      }
+      className="
+        bg-gradient-to-r
+        from-blue-600
+        to-indigo-700
+        hover:from-blue-700
+        hover:to-indigo-800
+        text-white
+        px-6
+        py-3
+        rounded-2xl
+        font-bold
+        shadow-xl
+        hover:scale-105
+        transition-all
+        duration-300
+      "
+    >
+      Open Full Editor
+    </button>
+
+    <button
+      onClick={() => {
+        localStorage.setItem(
+          `schedule-course-${courseId}`,
+          JSON.stringify(modules)
+        );
+
+        alert("Course Saved Successfully");
+      }}
+      className="
+        bg-green-600
+        hover:bg-green-700
+        text-white
+        px-6
+        py-3
+        rounded-2xl
+        font-bold
+        shadow-lg
+        transition
+      "
+    >
+      Save Course
+    </button>
+
+  </div>
+
+</div>
                 <p className="text-[24px] font-black text-black leading-tight">
                   Module {moduleIndex + 1}
                 </p>
